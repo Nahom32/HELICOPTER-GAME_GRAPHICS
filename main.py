@@ -33,8 +33,8 @@ def main():
     glLoadIdentity()
     gluOrtho2D(0, 4000.0, 0, 4000.0)
     glClear(GL_COLOR_BUFFER_BIT)
-    
     while True:
+        glClear(GL_COLOR_BUFFER_BIT)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -54,6 +54,7 @@ def main():
         # background()
         print(x)
         draw = helicopter.Helicopter(x[0],x[1])
+
         draw.draw()
         # pygame.display.update()
         pygame.display.flip()
