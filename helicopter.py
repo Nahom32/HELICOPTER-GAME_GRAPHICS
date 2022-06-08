@@ -4,7 +4,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import numpy as np
-import math
+# import math
 
 
 
@@ -60,7 +60,7 @@ class Helicopter:
         # Trying to Build a WINDOW for the heli
         glBegin(GL_POLYGON)
         glColor4f(0.1,0.1,0.1,0.01)
-        rad = 100
+        rad = 110
         teta = 0.0
         while teta < 360:
             x = rad * cos(teta)
@@ -141,4 +141,4 @@ class Helicopter:
             glVertex2f(-570 + self.x + vertex[0] * mat[0][0] + vertex[1]*mat[0]
                        [1], 27 + self.y + vertex[0] * mat[1][0] + vertex[1]*mat[1][1])
         glEnd()
-        glFlush()
+        
