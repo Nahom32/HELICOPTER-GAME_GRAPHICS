@@ -28,6 +28,7 @@ import time
 def main():
     boolval = True
     enemylist = []
+    booletlist = []
     # init()
     x = [1200, 700]
     counter = 0
@@ -54,12 +55,15 @@ def main():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
+                elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_SPACE:
+                        booletlist.append(x)
             p = pygame.key.get_pressed()
 
-            pygame.draw.rect(wn,(255,255,255),(20,20, 100,200),)
+            # pygame.draw.rect(wn,(255,255,255),(20,20, 100,200),)
             # Gravity for the heli
             if x[1] > 200:
-                x[1] = x[1] - 2
+                x[1] = x[1] - 1
             # movement up for the heli
             if p[K_w] or p[K_UP]:
                 x[1] = x[1] + 5
@@ -74,16 +78,28 @@ def main():
             # movement right for the heli
             if p[K_d] or p[K_RIGHT]:
                 x[0] = x[0] + 5
+           
+
+
             # background()
             # print(x)
             counter += 1
+            index = 0
             draw = helicopter.Helicopter(x[0],x[1], counter, deg) # Calls the helicopter class
             deg += 7 # provide the degree of rotation
             draw.draw()
+            while index < len(booletlist):
+                draw.draw_bullet(booletlist[index][0], booletlist[index][1])
+                booletlist[index] = [booletlist[index][0] + 20, booletlist[index][1]]
+                if (booletlist[index][0] > 4000):
+                    booletlist.pop(index)
+                index += 1
+            #  print(booletlist)
             # The while loop below displays the enemies stored in ENEMYLIST list traversing through the whole list
             # Once an enemy is generated it the position along the x will be decreased by the JUMP variable in order to change the position
             index = 0
             while index < len(enemylist):
+              
                 enemy = Enemy.Enemy(enemylist[index][0], enemylist[index][1])
                 enemy.draw()
                 # The if statement below checks if there is a collision between the heli and the enemies
@@ -100,6 +116,16 @@ def main():
                         enemylist.pop(index)
                     index -= 1
                 enemylist[index] = [enemylist[index][0]-jump,enemylist[index][1]]
+                booletindex = 0
+                while booletindex < len(booletlist):
+                    if len(enemylist) > 0 and enemylist[index][0] - 80 < booletlist[booletindex][0] - 20 < booletlist[booletindex][0] + 20 < enemylist[index][0] + 80 and enemylist[index][1] - 100 < booletlist[booletindex][1] - 20 < booletlist[booletindex][1] + 20 < enemylist[index][1] + 100:
+                        enemylist.pop(index)
+                        booletlist.pop(booletindex) 
+                        index -= 1
+                        if(len(booletlist) == 0):
+                            break
+                    else:
+                        booletindex += 1
                 index += 1
             # The below if statement appends position of enemies in to ENEMYLIST list
             # Also increases the defficulty of the game by increasing the speed by which enmies are grnerated
@@ -125,7 +151,7 @@ def main():
         glFlush()
         # pygame.display.update()
         pygame.display.flip()
-        pygame.time.wait(1)
+        pygame.time.wait(2)
         
 
 main()
