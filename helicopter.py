@@ -149,7 +149,7 @@ class Helicopter:
         count = 0
         glBegin(GL_POLYGON)
         glColor4f(1.0,0.5,0,1.0)
-        rad = 15
+        rad = 20
         teta = arr[count]
         while teta < 360:
             x = rad * cos(teta)
@@ -160,9 +160,9 @@ class Helicopter:
             count+=1
             teta = arr[count]
         glEnd()
-    def shoot(self):
-        bullet_list = []
-        bullet_list.append(self.get_pos())
+    # def shoot(self):
+    #     bullet_list = []
+    #     bullet_list.append(self.get_pos())
         #This is where the shooting structure is done
         
 
