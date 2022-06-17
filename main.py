@@ -59,7 +59,7 @@ def main():
             pygame.draw.rect(wn,(255,255,255),(20,20, 100,200),)
             # Gravity for the heli
             if x[1] > 200:
-                x[1] = x[1] - 2
+                x[1] = x[1] - 1
             # movement up for the heli
             if p[K_w] or p[K_UP]:
                 x[1] = x[1] + 5
@@ -74,6 +74,9 @@ def main():
             # movement right for the heli
             if p[K_d] or p[K_RIGHT]:
                 x[0] = x[0] + 5
+            if p[K_x]:
+                draw.draw_bullet()
+
             # background()
             # print(x)
             counter += 1
@@ -84,8 +87,11 @@ def main():
             # Once an enemy is generated it the position along the x will be decreased by the JUMP variable in order to change the position
             index = 0
             while index < len(enemylist):
+              
                 enemy = Enemy.Enemy(enemylist[index][0], enemylist[index][1])
                 enemy.draw()
+                
+                
                 # The if statement below checks if there is a collision between the heli and the enemies
                 # If the condition is satisfied it will change the BOOLVAL to false in which case the game play screen will not be displayed
                 if(x[1] - 180 < enemylist[index][1] < x[1] + 180 and x[0] - 400 < enemylist[index][0]-10 <= x[0]+220):

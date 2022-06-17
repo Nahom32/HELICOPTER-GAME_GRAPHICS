@@ -93,9 +93,9 @@ class Helicopter:
         glVertex2f(self.x - 20,self.y + 200)
         glVertex2f(self.x + 20,self.y + 200)
         glEnd()
+        
 
-
-        # ehlicopter TOP-rotor drawing
+        # helicopter TOP-rotor drawing
         glBegin(GL_POLYGON)
         glColor4f(0.0, 0.0, 0.0, 8.0)
         radian = self.deg * np.pi / 180.0
@@ -141,4 +141,29 @@ class Helicopter:
             glVertex2f(-570 + self.x + vertex[0] * mat[0][0] + vertex[1]*mat[0]
                        [1], 27 + self.y + vertex[0] * mat[1][0] + vertex[1]*mat[1][1])
         glEnd()
+    def get_pos(self):
+        #This helps the enemy to get the position of the helicopter
+        return (self.x,self.y)
+    def draw_bullet(self,x_start, y_start):
+        arr = np.linspace(0,360, 200)
+        count = 0
+        glBegin(GL_POLYGON)
+        glColor4f(1.0,0.5,0,1.0)
+        rad = 15
+        teta = arr[count]
+        while teta < 360:
+            x = rad * cos(teta)
+            y = rad * sin(teta)
+            x = x.real
+            y = y.real
+            glVertex2d(x + x_start ,y + y_start)
+            count+=1
+            teta = arr[count]
+        glEnd()
+    def shoot(self):
+        bullet_list = []
+        bullet_list.append(self.get_pos())
+        #This is where the shooting structure is done
+        
+
         
