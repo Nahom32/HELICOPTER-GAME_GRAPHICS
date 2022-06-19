@@ -1,109 +1,32 @@
+# import imp
 import pygame
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import helicopter
 import Enemy
-import numpy as np
-import time
-
-
-
-# def init():
-#     pygame.init()
-#     display = (500, 500)
-#     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-#     glClearColor(0.7, 0.9, 1.0, 1.0)
-#     gluOrtho2D(0, 2000.0, 0, 2000.0)
-#     glClear(GL_COLOR_BUFFER_BIT)
-# def background():
-#     glClear(GL_COLOR_BUFFER_BIT)
-#     glColor3f(1.0, 1.0, 1.0)
-#     glPointSize(1)
-#     glBegin(GL_POINT)
-#     glEnd()
-# def enemy():
-#     pass
-def hor_line(x1,y1,x2):
-    glColor4f(0,0,0,1)
-    glBegin(GL_LINE_STRIP)
-    # glPointSize(100)
-    glVertex2f(x1,y1)
-    glVertex2f(x2,y1)
-    glEnd()
-def vert_line(x1,y1,y2):
-    glColor4f(0,0,0,1)
-    glPointSize(100)
-    glBegin(GL_LINE_STRIP)
-    # glPointSize(100)
-    glVertex2f(x1,y1)
-    glVertex2f(x1,y2)
-    glEnd()
-
-def start_menu():
-    # glClear(1.0,1.0,1.0,1.0)
-    glColor4f(0.7,0.7,0.9,1)
-    glBegin(GL_POLYGON)
-    glVertex2f(1300,1400)
-    glVertex2f(2400,1400)
-    glVertex2f(2400,1800)
-    glVertex2f(1300,1800)
-    glEnd()
-    hor_line(1360,1780,1550)
-    vert_line(1360,1780,1480) #The 4 lines represent E
-    hor_line(1360,1480,1550)
-    hor_line(1360,1620,1550)
-
-    vert_line(1580,1780,1480)
-    hor_line(1580,1780,1700)
-    vert_line(1700,1780,1480) #The 5 lines represent N
-    hor_line(1700,1480,1820)
-    vert_line(1820,1780,1480)
-
-    hor_line(1850,1780,2100)
-    vert_line(2100,1780,1480) # The 4 lines represent D
-    hor_line(1850,1480,2100)
-    vert_line(1870,1780,1480)
-
-
-    glBegin(GL_POLYGON)
-    glColor4f(0.7,0.7,0.9,1)
-    glVertex2f(1300,1900)
-    glVertex2f(2400,1900)
-    glVertex2f(2400,2300)
-    glVertex2f(1300,2300)
-    glEnd()
-
-    hor_line(1360,2280,1540)
-    vert_line(1360,2280,2130) #The 5 lines represent 'S'
-    hor_line(1360,2130,1540)
-    vert_line(1540,2130,1950)
-    hor_line(1540,1950,1360)
-
-    hor_line(1570,2280,1750)  #The 2 lines represent 'T'
-    vert_line(1660,2280,1950)
-
-    vert_line(1780,2280,1950)
-    hor_line(1780,2280,1960) # The 4 lines represent 'A'
-    hor_line(1780,2130,1960)
-    vert_line(1960,2280,1950)
-
-    vert_line(1990,2280,1950)
-    hor_line(1990,2280,2140)
-    vert_line(2140,2280,2130) #The 5 lines represent 'R'
-    hor_line(1990,2130,2170)
-    vert_line(2170,2130,1950)
-
-    hor_line(2170,2280,2350)
-    vert_line(2260,2280,1950) #The 2 lines represent 'T'
-
+# import numpy as np
+# import time
+from startmenu import *
+import random
+from clouds import Clouds
+from score import *
+import os
 
 
 def main():
+    pygame.init()
+    # os.getcwd()
+    # helisound = pygame.mixer.Sound("helisound.ogg")
+    # pygame.mixer.music.load('jazz.wav')
     boolval = "menu"
     enemylist = []
     booletlist = []
     wait = 0
+    special = 0
+    score = 0
+    cloudcounter = 0
+    cloudlist = []
     # init()
     x = [1000, 1000]
     counter = 0
@@ -120,7 +43,7 @@ def main():
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluOrtho2D(0, 4000.0, 0, 4000.0)
-    # glClear(GL_COLOR_BUFFER_BIT)
+    glClear(GL_COLOR_BUFFER_BIT)
     while True:
         if boolval == False:
             glClearColor(0.0, 0.0, 0.0, 1.0)
@@ -132,42 +55,97 @@ def main():
                     quit()
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_SPACE:
-                        booletlist.append(x)
+                        booletlist.append([x[0] + 220, x[1] - 95])
             p = pygame.key.get_pressed()
 
             # pygame.draw.rect(wn,(255,255,255),(20,20, 100,200),)
             # Gravity for the heli
             if x[1] > 200:
-                x[1] = x[1] - 1
+                x[1] = x[1] - 10
             # movement up for the heli
             if p[K_w] or p[K_UP]:
-                x[1] = x[1] + 5
+                x[1] = x[1] + 25
             # movement down for the heli
             if p[K_s] or p[K_DOWN]:
                 if x[1] > 200:
-                    x[1] = x[1] -5
+                    x[1] = x[1] -15
             # movement down for the heli
             if p[K_a] or p[K_LEFT]:
                 if x[0] > 650:
-                    x[0] = x[0] - 5
+                    x[0] = x[0] - 15
             # movement right for the heli
             if p[K_d] or p[K_RIGHT]:
-                x[0] = x[0] + 5
+                x[0] = x[0] + 15
            
 
 
             # background()
             # print(x)
-            counter += 1
-            index = 0
-            draw = helicopter.Helicopter(x[0],x[1], counter, deg) # Calls the helicopter class
-            deg += 7 # provide the degree of rotation
+
+            intx = 3800
+            counter += 10
+            newscore = score
+            curscore = str(newscore)
+            int(score)
+            # numdraw = Score(3900, inty)
+            for sc in curscore:
+                numdraw = Score(intx, 3800)
+                if sc == "1":
+                    numdraw.one()
+                elif sc == "2":
+                    numdraw.two()
+                elif sc == "3":
+                    numdraw.three()
+                elif sc == "4":
+                    numdraw.four()
+                elif sc == "5":
+                    numdraw.five()
+                elif sc == "6":
+                    numdraw.six()
+                elif sc == "7":
+                    numdraw.seven() 
+                elif sc == "8":
+                    numdraw.eight()
+                elif sc == "9":
+                    numdraw.nine()
+                elif sc == "0":
+                    numdraw.zero()
+                intx += 60
+
+            cloudcounter += 1
+            if cloudcounter == 1:
+                cloudpos = random.randint(2500,3800)
+                cloudlist.append([4500, cloudpos])
+            if cloudcounter == 500:
+                cloudcounter = 0
+            cldcounter = 0
+            while cldcounter < len(cloudlist):
+                if cloudlist[cldcounter][1] < -500:
+                    cloudlist.pop(cldcounter)
+                cldcounter += 1
+            cldcounter = 0
+            # print("some")
+            while cldcounter < len(cloudlist):
+                cld = Clouds(cloudlist[cldcounter][0], cloudlist[cldcounter][1])
+                cld.drawCloud()
+                cloudlist[cldcounter] = [
+                    cloudlist[cldcounter][0]-5, cloudlist[cldcounter][1]]
+                cldcounter += 1
+            draw = helicopter.Helicopter(x[0],x[1], counter, deg, score = score) # Calls the helicopter class
+            deg += 17 # provide the degree of rotation
             draw.draw()
+            # helisound.play(-1)
             # start_menu()
+            index = 0
             while index < len(booletlist):
                 draw.draw_bullet(booletlist[index][0], booletlist[index][1])
-                booletlist[index] = [booletlist[index][0] + 20, booletlist[index][1]]
+                booletlist[index] = [booletlist[index][0] + 40, booletlist[index][1]]
                 if (booletlist[index][0] > 4000):
+                    booletlist.pop(index)
+                index += 1
+            index = 0
+            while index < len(booletlist):
+                if booletlist[index][1] > 4000:
                     booletlist.pop(index)
                 index += 1
             #  print(booletlist)
@@ -198,21 +176,34 @@ def main():
                         enemylist.pop(index)
                         booletlist.pop(booletindex) 
                         index -= 1
+                        score += 1
                         if(len(booletlist) == 0):
                             break
                     else:
                         booletindex += 1
                 index += 1
+            # print(score)
             # The below if statement appends position of enemies in to ENEMYLIST list
             # Also increases the defficulty of the game by increasing the speed by which enmies are grnerated
             # When the game begins enemies are generated once in 700 screen renders in time this will decrease up to 150(SCREENS variable)
             # Every time the condition is satisfied the movement of the enemy blocks is increased by 0.2 coordinates(JUMP variable)
             if(counter == screens):
                 enemylist.append([4000,x[1]])
+                if special == 1000:
+                    num = random.randint(100,3950)
+                    special = 0
+                    if num != x[1]:
+                        enemylist.append([4000, num])
                 if screens > 150:
                     screens -= 15
                 counter = 0
-                jump += 0.2
+                jump += 9
+            special += 10
+            if special == 1000:
+                num = random.randint(100, 3950)
+                special = 0
+                if num != x[1]:
+                    enemylist.append([4000, num])
         elif boolval == "menu":
             glClear(GL_COLOR_BUFFER_BIT)
             for event in pygame.event.get():
@@ -232,22 +223,41 @@ def main():
                     elif 260 < pos[0] < 479 and 497 < pos[1] < 581:
                         boolval = "quit"
             # Calls the helicopter class
+            # cloud = Clouds(3000,3000)
+            # cloud.drawCloud()
+            cloudcounter += 1
+            if cloudcounter == 1:
+                cloudpos = random.randint(2500, 3800)
+                cloudlist.append([4500, cloudpos])
+            if cloudcounter == 300:
+                cloudcounter = 0
+            cldcounter = 0
+            while cldcounter < len(cloudlist):
+                if cloudlist[cldcounter][1] < -500:
+                    cloudlist.pop(cldcounter)
+                cldcounter += 1
+            cldcounter = 0
+            # print("some")
+            while cldcounter < len(cloudlist):
+                cld = Clouds(cloudlist[cldcounter][0],
+                             cloudlist[cldcounter][1])
+                cld.drawCloud()
+                cloudlist[cldcounter] = [
+                    cloudlist[cldcounter][0]-5, cloudlist[cldcounter][1]]
+                cldcounter += 1
             draw = helicopter.Helicopter(x[0], x[1], counter, deg)
             deg += 7  # provide the degree of rotation
             draw.draw()
             start_menu()
-            pass
+            score = 0
         elif boolval == "quit":
             pygame.quit()
             quit()
             pass
         elif boolval == "gameover":
-            # for event in pygame.event.get():
-            #     if event.type == pygame.QUIT:
-            #         pygame.quit()
-            #         quit()
             glClear(GL_COLOR_BUFFER_BIT)
-            if wait == 800:
+            if wait >= 500:
+                print(score)
                 boolval = "menu"
                 enemylist = []
                 booletlist = []
@@ -256,18 +266,12 @@ def main():
                 x = [1000, 1000]
                 counter = 0
                 deg = 0.0
-                jump = 3
+                jump = 10
                 screens = 700
-            wait += 1
-            # glEnable(GL_BLEND)
-            # glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-            # draw = helicopter.Helicopter(x[0], x[1], counter, deg)
-            # deg += 7
-            # draw.draw()
+            wait += 9
         glFlush()
-        # pygame.display.update()
         pygame.display.flip()
-        pygame.time.wait(1)
+        pygame.time.wait(10)
         
 
 main()

@@ -1,5 +1,4 @@
 from cmath import cos, sin
-import pygame
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -9,13 +8,14 @@ import numpy as np
 
 
 class Helicopter:
-    def __init__(self,x,y, counter, deg) -> None:
+    def __init__(self,x,y, counter, deg, score = 0) -> None:
+        self.score = score
         self.deg = deg
         self.counter = counter
         self.x = x
         self.y = y
     def draw(self):
-        glClear(GL_COLOR_BUFFER_BIT)
+        # glClear(GL_COLOR_BUFFER_BIT)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
 
@@ -26,23 +26,23 @@ class Helicopter:
 
         # The legs of the helicopter are drawn below this
         glBegin(GL_POLYGON)
-        glColor4f(0.6, 0.2, 0.4, 1.0)
+        glColor4f(0.4, 0.4, 0.4, 1.0)
         glVertex2f(-80 + self.x, -120 + self.y)
-        glVertex2f(-80 + self.x, -200 + self.y)
+        glVertex2f(-100 + self.x, -200 + self.y)
         glVertex2f(-120 + self.x, -200 + self.y)
         glVertex2f(-100 + self.x, -120 + self.y)
         glEnd()
         glBegin(GL_POLYGON)
-        glColor4f(0.6, 0.2, 0.4, 1.0)
+        glColor4f(0.4, 0.4, 0.4, 1.0)
         glVertex2f(-120 + self.x, -200 + self.y)
         glVertex2f(120 + self.x, -200 + self.y)
         glVertex2f(120 + self.x, -180 + self.y)
         glVertex2f(-120 + self.x, -180 + self.y)
         glEnd()
         glBegin(GL_POLYGON)
-        glColor4f(0.6, 0.2, 0.4, 1.0)
+        glColor4f(0.4, 0.4, 0.4, 1.0)
         glVertex2f(80 + self.x, -120 + self.y)
-        glVertex2f(80 + self.x, -200 + self.y)
+        glVertex2f(100 + self.x, -200 + self.y)
         glVertex2f(120 + self.x, -200 + self.y)
         glVertex2f(100 + self.x, -120 + self.y)
         glEnd()
@@ -50,12 +50,20 @@ class Helicopter:
 
         # The back of the helicopter is drawn here below
         glBegin(GL_POLYGON)
-        glColor4f(0.0, 0.0, 0.0, 1.0)
+        glColor4f(0.06, 0.06, 0.537, 1.0)
         glVertex2f(-100 + self.x, 50 + self.y)
         glVertex2f(-100 + self.x, -50 + self.y)
         glVertex2f(-600 + self.x, 10 + self.y)
         glVertex2f(-600 + self.x, 50 + self.y)
         glEnd()
+
+        # glBegin(GL_POLYGON)
+        # glColor4f(0.0, 0.0, 0.0, 1)
+        # glVertex2f(-100 + self.x, -20 + self.y)
+        # glVertex2f(-100 + self.x, -50 + self.y)
+        # glVertex2f(-600 + self.x, 10 + self.y)
+        # glVertex2f(-600 + self.x, 15 + self.y)
+        # glEnd()
 
         # Trying to Build a WINDOW for the heli
         glBegin(GL_POLYGON)
@@ -73,7 +81,7 @@ class Helicopter:
 
         # The middle part of the heli
         glBegin(GL_POLYGON)
-        glColor4f(0.0, 0.5, 0.9, 1.0)
+        glColor4f(0.06, 0.06, 0.537, 1.0)
         rad = 160
         teta = 0.0
         while teta < 360:
@@ -84,10 +92,117 @@ class Helicopter:
             glVertex2d(x + self.x,y + self.y)
             teta = teta + 1
         glEnd()
+        glBegin(GL_POLYGON)
+        glColor4f(1.0, 1.0, 1.0, 0.05)
+        rad = 60
+        teta = 0.0
+        while teta < 360:
+            x = (rad-10) * cos(teta)
+            y = (rad) * sin(teta)
+            x = x.real
+            y = y.real
+            glVertex2d(x + self.x-20, y + self.y + 30)
+            teta = teta + 1
+        glEnd()
+        glBegin(GL_POLYGON)
+        glColor4f(1.0, 1.0, 1.0, 0.05)
+        rad = 30
+        teta = 0.0
+        while teta < 360:
+            x = (rad-10) * cos(teta)
+            y = (rad) * sin(teta)
+            x = x.real
+            y = y.real
+            glVertex2d(x + self.x +20, y + self.y + 30)
+            teta = teta + 1
+        glEnd()
+        glBegin(GL_POLYGON)
+        glColor4f(1.0, 1.0, 1.0, 0.05)
+        glVertex2d(self.x - 30, self.y + 60)
+        glVertex2d(self.x + 30, self.y + 60)
+        glVertex2d(self.x + 30, self.y - 00)
+        glVertex2d(self.x - 30, self.y - 00)
+        glEnd()
+        # glBegin(GL_POLYGON)
+        # glColor4f(1.0, 1.0, 1.0, 0.05)
+        # rad = 30
+        # teta = 0.0
+        # while teta < 360:
+        #     x = (rad-20) * cos(teta)
+        #     y = (rad + 0) * sin(teta)
+        #     x = x.real
+        #     y = y.real
+        #     glVertex2d(x + self.x+30, y + self.y + 30)
+        #     teta = teta + 1
+        # glEnd()
+        # glBegin(GL_POLYGON)
+        # glColor4f(1.0, 1.0, 1.0, 1)
+        # rad = 5
+        # teta = 0.0
+        # while teta < 360:
+        #     x = (rad) * cos(teta)
+        #     y = (rad) * sin(teta)
+        #     x = x.real
+        #     y = y.real
+        #     glVertex2d(x + self.x-30, y + self.y + 40)
+        #     teta = teta + 1
+        # glEnd()
+
+
+        glBegin(GL_LINE_STRIP)
+        glColor4f(0.0, 0.00, 0.0, 0.03)
+        rad = 150
+        tet = 0
+        while tet < 270:
+            x = rad * cos(tet)
+            y = rad * sin(tet)
+            x = x.real
+            y = y.real
+            if x > 0:
+                x = -x
+            # if y > 0:
+            #     y = -y
+            # print(x + self.x + 40,y + self.y)
+            glVertex2d(x + self.x - 5, y + self.y)
+            tet = tet + 1
+        glEnd()
+
+        glBegin(GL_LINE_STRIP)
+        glColor4f(0.0, 0.00, 0.0, 0.03)
+        rad = 140
+        tet = 0
+        while tet < 270:
+            x = rad * cos(tet)
+            y = rad * sin(tet)
+            x = x.real
+            y = y.real
+            if x > 0 and y > 0:
+                x = -x
+            if x < 0 and y > 0:
+                y = -y
+            # if y > 0:
+            #     y = -y
+            # print(x + self.x + 40,y + self.y)
+            glVertex2d(x + self.x - 10, y + self.y-10)
+            tet = tet + 1
+        glEnd()
+
+        # Something that looks like a gun
+        glBegin(GL_POLYGON)
+        glColor4f(0.0, 0.0, 0.0, 1.0)
+        glVertex2d(self.x + 50, self.y - 80)
+        glVertex2d(self.x + 120, self.y - 80)
+        glVertex2d(self.x + 120, self.y - 90)
+        glVertex2d(self.x + 220, self.y - 90)
+        glVertex2d(self.x + 220, self.y - 100)
+        glVertex2d(self.x + 120, self.y - 100)
+        glVertex2d(self.x + 120, self.y - 105)
+        glVertex2d(self.x + 50, self.y - 105)
+        glEnd()
 
         # The thing to cary the rototor
         glBegin(GL_POLYGON)
-        glColor4f(0.0, 0.0, 0.0, 1.0)
+        glColor4f(0.5, 0.5, 0.5, 1.0)
         glVertex2f(self.x + 20,self.y + 155)
         glVertex2f(self.x - 20,self.y + 155)
         glVertex2f(self.x - 20,self.y + 200)
@@ -149,7 +264,7 @@ class Helicopter:
         count = 0
         glBegin(GL_POLYGON)
         glColor4f(1.0,0.5,0,1.0)
-        rad = 20
+        rad = 15
         teta = arr[count]
         while teta < 360:
             x = rad * cos(teta)
